@@ -1,30 +1,41 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Socket.IO Chat</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BWM XMD CHATTING ROOM</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <ul class="pages">
-    <li class="login page active">
-      <div class="form">
-        <h3 class="title">Choose A Nickname</h3>
-        <input class="usernameInput" type="text" maxlength="14" placeholder="Type your nickname..." />
-        <button class="submitButton">Join Chat</button>
-        <p class="instructions">Press Enter or click the button to join</p>
-      </div>
-    </li>
-    <li class="chat page">
-      <div class="chatArea">
-        <ul class="messages"></ul>
-      </div>
-      <input class="inputMessage" placeholder="Type your message here..." />
-    </li>
-  </ul>
+    <!-- Login Page -->
+    <div class="login-container active">
+        <div class="auth-box">
+            <h1>VERIFICATION</h1>
+            <p class="subtitle">Enter your credentials to access the chat</p>
+            <input type="text" id="loginUsername" placeholder="Username" required>
+            <input type="password" id="loginPassword" placeholder="Password" required>
+            <button id="loginButton">Verify Identity</button>
+        </div>
+    </div>
 
-  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="main.js"></script>
+    <!-- Chat Page -->
+    <div class="chat-container">
+        <header class="chat-header">
+            <div class="connection-status">Connected</div>
+            <h1>ENGAGEMENT ROOM</h1>
+        </header>
+        
+        <div class="message-area" id="messageArea">
+            <!-- Messages will appear here -->
+        </div>
+        
+        <div class="input-area">
+            <input type="text" id="messageInput" placeholder="Type message...">
+            <button id="sendButton">Send</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>
