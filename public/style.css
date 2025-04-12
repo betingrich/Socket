@@ -7,7 +7,7 @@ html {
   -webkit-font-smoothing: antialiased;
 }
 
-html, input {
+html, input, button {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
@@ -15,13 +15,16 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  background-color: #f5f5f5;
 }
 
 ul {
   list-style: none;
   word-wrap: break-word;
+  padding: 0;
 }
 
+/* Pages */
 .pages {
   height: 100%;
   margin: 0;
@@ -37,81 +40,118 @@ ul {
 }
 
 .page.active {
-  display: block;
-}
-
-.login.page {
-  background-color: #000;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+/* Login Page */
+.login.page {
+  background-color: #000;
+}
+
 .login.page .form {
   width: 100%;
   max-width: 400px;
+  padding: 20px;
   text-align: center;
 }
 
 .login.page .title {
-  font-size: 200%;
+  font-size: 2rem;
   color: #fff;
-  font-weight: 100;
+  font-weight: 300;
+  margin-bottom: 2rem;
 }
 
 .login.page .usernameInput {
-  background-color: transparent;
-  border: none;
-  border-bottom: 2px solid #fff;
-  outline: none;
-  padding-bottom: 15px;
-  text-align: center;
   width: 100%;
-  color: #fff;
-  font-size: 200%;
-  letter-spacing: 3px;
-  font-weight: 100;
+  padding: 12px 15px;
+  font-size: 1.2rem;
+  border: 2px solid #4CAF50;
+  border-radius: 4px;
+  outline: none;
+  margin-bottom: 1rem;
+}
+
+.login.page .submitButton {
+  background: #4CAF50;
+  border: none;
+  color: white;
+  padding: 12px 24px;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.login.page .submitButton:hover {
+  background: #45a049;
+  transform: translateY(-2px);
+}
+
+.login.page .submitButton:active {
+  background: #3d8b40;
+  transform: translateY(0);
+}
+
+.login.page .instructions {
+  color: #aaa;
+  font-size: 0.9rem;
+  margin-top: 1.5rem;
+}
+
+/* Chat Page */
+.chat.page {
+  flex-direction: column;
+  background-color: #fff;
 }
 
 .chatArea {
-  height: calc(100% - 60px);
+  flex: 1;
+  width: 100%;
+  padding: 20px;
+  overflow-y: auto;
 }
 
 .messages {
   height: 100%;
   margin: 0;
-  overflow-y: scroll;
-  padding: 10px 20px;
-  font-size: 150%;
+  padding: 0;
 }
 
-.inputMessage {
-  font-size: 100%;
-  border: 10px solid #000;
-  bottom: 0;
-  height: 60px;
-  left: 0;
-  outline: none;
-  padding-left: 10px;
-  position: absolute;
-  right: 0;
-  width: 100%;
-}
-
-.log {
-  color: gray;
-  font-size: 70%;
-  margin: 5px;
-  text-align: center;
-}
-
-.message.typing .messageBody {
-  color: gray;
+.message {
+  margin-bottom: 15px;
+  line-height: 1.4;
 }
 
 .username {
-  font-weight: 700;
-  overflow: hidden;
-  padding-right: 15px;
-  text-align: right;
+  font-weight: bold;
+  color: #4CAF50;
+  margin-right: 10px;
+}
+
+.inputMessage {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-top: 1px solid #ddd;
+  font-size: 1rem;
+  outline: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .login.page .form {
+    padding: 15px;
+  }
+  
+  .login.page .title {
+    font-size: 1.5rem;
+  }
+  
+  .login.page .usernameInput {
+    font-size: 1rem;
+  }
 }
