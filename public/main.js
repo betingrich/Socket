@@ -1,55 +1,74 @@
 $(function() {
-  const FADE_TIME = 150;
+  // DOM Elements
   const $window = $(window);
   const $usernameInput = $('.usernameInput');
   const $messages = $('.messages');
   const $inputMessage = $('.inputMessage');
   const $loginPage = $('.login.page');
   const $chatPage = $('.chat.page');
+  const $submitButton = $('.submitButton');
 
   // Connect to server
-  const socket = io('http://localhost:3000', {
-    reconnectionAttempts: 5
-  });
-
-  // Debugging events
-  socket.on('connect', () => console.log('Connected to server'));
-  socket.on('connect_error', (err) => console.log('Connection error:', err));
-  socket.on('disconnect', () => console.log('Disconnected'));
+  const socket = io();
 
   let username = '';
   let connected = false;
 
+  // Set username function
   const setUsername = () => {
-    username = cleanInput($usernameInput.val().trim());
-    console.log('Setting username:', username); // Debug log
-
+    username = $usernameInput.val().trim();
+    
     if (username) {
+      // Switch pages
       $loginPage.removeClass('active');
       $chatPage.addClass('active');
+      
+      // Focus on message input
       $inputMessage.focus();
+      
+      // Tell server the username
       socket.emit('add user', username);
+      
+      // Add welcome message
+      addMessage('You joined the chat');
+    } else {
+      // Show error if no username entered
+      alert('Please enter a nickname');
+      $usernameInput.focus();
     }
   };
 
-  const cleanInput = (input) => {
-    return $('<div/>').text(input).html();
+  // Add message to chat
+  const addMessage = (message, isSystem = false) => {
+    const $message = $('<li>').addClass(isSystem ? 'system' : 'message');
+    $message.text(message);
+    $messages.append($message);
+    $messages[0].scrollTop = $messages[0].scrollHeight;
   };
 
-  // Keyboard events
+  // Event Listeners
+  $submitButton.click(setUsername);
+
   $window.keydown(event => {
-    if (event.which === 13) { // Enter key
+    // Enter key pressed
+    if (event.which === 13) {
       if (!username) {
         setUsername();
+      } else {
+        // Send message if already logged in
+        const message = $inputMessage.val();
+        if (message) {
+          socket.emit('new message', message);
+          addMessage(`You: ${message}`);
+          $inputMessage.val('');
+        }
       }
     }
   });
 
-  // Socket events
+  // Socket Events
   socket.on('login', (data) => {
-    console.log('Login successful', data); // Debug log
     connected = true;
-    addMessage('Welcome to the chat');
   });
 
   socket.on('new message', (data) => {
@@ -57,16 +76,13 @@ $(function() {
   });
 
   socket.on('user joined', (data) => {
-    addMessage(`${data.username} joined the chat`);
+    addMessage(`${data.username} joined the chat`, true);
   });
 
   socket.on('user left', (data) => {
-    addMessage(`${data.username} left the chat`);
+    addMessage(`${data.username} left the chat`, true);
   });
 
-  function addMessage(message) {
-    const $message = $('<li>').text(message);
-    $messages.append($message);
-    $messages[0].scrollTop = $messages[0].scrollHeight;
-  }
+  // Initial focus
+  $usernameInput.focus();
 });
