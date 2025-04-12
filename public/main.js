@@ -9,33 +9,79 @@ document.addEventListener('DOMContentLoaded', () => {
     const sendButton = document.getElementById('sendButton');
     const messageArea = document.getElementById('messageArea');
     const connectionStatus = document.querySelector('.connection-status');
+    const authError = document.getElementById('authError');
 
-    // Connect to Socket.io server
-    const socket = io('https://your-heroku-or-render-url.com', {
+    // Initialize Socket.io connection
+    const socket = io('https://mariselriom-9fc58eef44e8.herokuapp.com/', {
         reconnection: true,
         reconnectionAttempts: Infinity,
         transports: ['websocket']
     });
 
-    // Authentication
-    loginButton.addEventListener('click', () => {
+    // Authentication Flow
+    loginButton.addEventListener('click', handleLogin);
+
+    // Allow login with Enter key
+    loginPassword.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleLogin();
+    });
+
+    async function handleLogin() {
         const username = loginUsername.value.trim();
         const password = loginPassword.value.trim();
         
-        if (username && password) {
-            // In production, you would verify credentials with your backend
-            socket.emit('authenticate', { username, password });
-            
-            // For demo, we'll just proceed
-            loginContainer.classList.remove('active');
-            chatContainer.style.display = 'flex';
-            messageInput.focus();
-            
-            // Set username and show welcome message
-            socket.emit('add user', username);
-            addSystemMessage('You joined the chat');
+        if (!username || !password) {
+            showError('Please enter both username and password');
+            return;
         }
-    });
+
+        try {
+            setLoading(true);
+            
+            // For demo purposes - in production, make actual API call
+            const isAuthenticated = await mockAuthCheck(username, password);
+            
+            if (isAuthenticated) {
+                loginContainer.classList.remove('active');
+                chatContainer.style.display = 'flex';
+                messageInput.focus();
+                
+                // Notify server
+                socket.emit('add user', username);
+                addSystemMessage('You joined the chat');
+            } else {
+                showError('Invalid credentials');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            showError('Login failed. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    // Mock authentication (replace with real API call)
+    function mockAuthCheck(username, password) {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                // Demo: Accept any non-empty credentials
+                resolve(username.length > 0 && password.length > 0);
+            }, 1000);
+        });
+    }
+
+    function setLoading(isLoading) {
+        loginButton.disabled = isLoading;
+        loginButton.classList.toggle('loading', isLoading);
+        loginButton.textContent = isLoading ? 'VERIFYING...' : 'VERIFY IDENTITY';
+    }
+
+    function showError(message) {
+        authError.textContent = message;
+        setTimeout(() => {
+            authError.textContent = '';
+        }, 3000);
+    }
 
     // Socket Events
     socket.on('connect', () => {
@@ -46,6 +92,11 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('disconnect', () => {
         connectionStatus.textContent = 'DISCONNECTED';
         connectionStatus.style.background = '#ff5555';
+    });
+
+    socket.on('connect_error', (err) => {
+        console.error('Connection error:', err);
+        showError('Connection failed. Please refresh.');
     });
 
     socket.on('new message', (data) => {
@@ -62,7 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Message Handling
     function addMessage(username, message, timestamp) {
-        const timeString = new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const timeString = new Date(timestamp).toLocaleTimeString([], { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
         
         const messageElement = document.createElement('div');
         messageElement.className = 'message';
