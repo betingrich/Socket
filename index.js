@@ -2,52 +2,56 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const http = require('http').createServer(app);
-const io = require('socket.io')(http);
+const io = require('socket.io')(http, {
+  cors: {
+    origin: "*", // Replace with your frontend URL in production
+    methods: ["GET", "POST"],
+    transports: ['websocket', 'polling'], // Critical for Heroku
+    pingInterval: 25000,
+    pingTimeout: 60000
+  }
+});
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Health check endpoint (Required for Render)
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
 
 let numUsers = 0;
 
 io.on('connection', (socket) => {
   let addedUser = false;
 
-  // When client emits 'add user'
   socket.on('add user', (username) => {
     if (addedUser) return;
-
-    // Store username and update count
+    
     socket.username = username;
     ++numUsers;
     addedUser = true;
     
-    // Send login success to client
-    socket.emit('login', {
-      numUsers: numUsers
-    });
-    
-    // Broadcast new user joined
-    socket.broadcast.emit('user joined', {
-      username: socket.username,
-      numUsers: numUsers
+    socket.emit('login', { numUsers });
+    socket.broadcast.emit('user joined', { 
+      username: socket.username, 
+      numUsers 
     });
   });
 
-  // When client sends message
   socket.on('new message', (message) => {
     socket.broadcast.emit('new message', {
       username: socket.username,
-      message: message
+      message
     });
   });
 
-  // When user disconnects
   socket.on('disconnect', () => {
     if (addedUser) {
       --numUsers;
       socket.broadcast.emit('user left', {
         username: socket.username,
-        numUsers: numUsers
+        numUsers
       });
     }
   });
@@ -55,5 +59,5 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3000;
 http.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
