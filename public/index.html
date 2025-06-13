@@ -14,57 +14,90 @@
         }
 
         body {
-            background-color: #121212;
-            color: #ffffff;
-            line-height: 1.6;
-            padding: 20px;
+            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background-color: #000;
+        }
+
+        #video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
         }
 
         .container {
+            width: 90%;
             max-width: 800px;
-            margin: 0 auto;
-            background-color: rgba(30, 30, 30, 0.8);
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            background-color: rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            margin: 1rem;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.05) 0%,
+                rgba(255, 255, 255, 0) 50%,
+                rgba(255, 255, 255, 0.05) 100%
+            );
+            z-index: -1;
         }
 
         h1 {
             text-align: center;
             margin-bottom: 30px;
             color: #4CAF50;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            font-weight: 600;
         }
 
         .form-group {
             margin-bottom: 20px;
             padding: 15px;
-            background-color: rgba(50, 50, 50, 0.5);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            background-color: rgba(255, 255, 255, 0.05);
             border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
+            color: rgba(255, 255, 255, 0.9);
         }
 
         input[type="text"],
-        input[type="tel"] {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #444;
-            background-color: #333;
-            color: white;
-            margin-bottom: 10px;
-        }
-
+        input[type="tel"],
         select {
             width: 100%;
             padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #444;
-            background-color: #333;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.1);
             color: white;
             margin-bottom: 10px;
         }
@@ -79,49 +112,55 @@
             flex: 1;
             text-align: center;
             padding: 8px;
-            background-color: #333;
-            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
             cursor: pointer;
             margin: 0 5px;
             transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .toggle-option.selected {
-            background-color: #4CAF50;
-            color: white;
+            background-color: rgba(76, 175, 80, 0.5);
+            border-color: rgba(76, 175, 80, 0.7);
         }
 
         button {
-            background-color: #4CAF50;
+            background-color: rgba(76, 175, 80, 0.5);
             color: white;
             border: none;
             padding: 12px 20px;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
             width: 100%;
             margin-top: 20px;
             transition: background-color 0.3s;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(76, 175, 80, 0.3);
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: rgba(76, 175, 80, 0.7);
         }
 
         .section-title {
             font-size: 18px;
             margin: 25px 0 15px;
             color: #4CAF50;
-            border-bottom: 1px solid #444;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             padding-bottom: 5px;
         }
 
         .get-session {
-            background-color: #333;
+            background-color: rgba(51, 51, 51, 0.5);
             padding: 10px;
-            border-radius: 5px;
+            border-radius: 8px;
             text-align: center;
             margin-bottom: 20px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
 
         .get-session a {
@@ -150,6 +189,10 @@
     </style>
 </head>
 <body>
+    <video id="video-bg" autoplay muted loop>
+        <source src="https://files.catbox.moe/4stg94.mp4" type="video/mp4">
+    </video>
+
     <div class="container">
         <h1><i class="fas fa-robot"></i> Mercedes Bot Configuration</h1>
         
@@ -171,12 +214,13 @@
         <!-- Basic Settings -->
         <div class="form-group">
             <label>Bot Mode:</label>
-            <select id="mode">
-                <option value="public">Public</option>
-                <option value="private">Private</option>
-                <option value="inbox">Inbox Only</option>
-                <option value="group">Group Only</option>
-            </select>
+            <div class="toggle-group">
+                <div class="toggle-option selected" data-value="public" data-target="mode">Public</div>
+                <div class="toggle-option" data-value="private" data-target="mode">Private</div>
+                <div class="toggle-option" data-value="inbox" data-target="mode">Inbox Only</div>
+                <div class="toggle-option" data-value="group" data-target="mode">Group Only</div>
+            </div>
+            <input type="hidden" id="mode" value="public">
             
             <label>Prefix:</label>
             <input type="text" id="prefix" placeholder="Enter command prefix" value=".">
@@ -299,10 +343,13 @@
         
         <button id="submit-btn">Submit Configuration</button>
         
-        <div id="success-message" class="form-group hidden" style="text-align: center; color: #4CAF50;">
-            <i class="fas fa-check-circle" style="font-size: 50px; margin-bottom: 15px;"></i>
-            <h2>Configuration Submitted Successfully!</h2>
-            <p>Your bot configuration has been received. You'll be contacted soon.</p>
+        <div id="whatsapp-compose" class="hidden">
+            <div class="form-group">
+                <h3 style="text-align: center; margin-bottom: 15px;">Review and Send Configuration</h3>
+                <div id="config-summary" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px; padding: 10px; background-color: rgba(0,0,0,0.3); border-radius: 8px;"></div>
+                <button id="send-whatsapp" style="background-color: #25D366;"><i class="fab fa-whatsapp"></i> Send via WhatsApp</button>
+                <button id="cancel-send" style="background-color: rgba(255,0,0,0.5); margin-top: 10px;">Cancel</button>
+            </div>
         </div>
     </div>
 
@@ -342,48 +389,60 @@
                 
                 // Collect all configuration values
                 const config = {
-                    SESSION_ID: sessionId,
-                    PHONE: phone,
-                    AUTO_STATUS_SEEN: document.getElementById('auto-status-seen').value,
-                    AUTO_STATUS_REPLY: document.getElementById('auto-status-reply').value,
-                    AUTO_STATUS_REACT: document.getElementById('auto-status-react').value,
-                    AUTO_STATUS_MSG: document.getElementById('auto-status-msg').value,
-                    ANTI_DELETE: document.getElementById('anti-delete').value,
-                    WELCOME: document.getElementById('welcome').value,
-                    ADMIN_EVENTS: document.getElementById('admin-events').value,
-                    ANTI_LINK: document.getElementById('anti-link').value,
-                    MENTION_REPLY: document.getElementById('mention-reply').value,
-                    MENU_IMAGE_URL: document.getElementById('menu-image-url').value,
-                    PREFIX: document.getElementById('prefix').value,
-                    BOT_NAME: document.getElementById('bot-name').value,
-                    CUSTOM_REACT_EMOJIS: document.getElementById('custom-react-emojis').value,
-                    ANTI_LINK_KICK: document.getElementById('anti-link-kick').value,
-                    READ_MESSAGE: document.getElementById('read-message').value,
-                    AUTO_REACT: document.getElementById('auto-react').value,
-                    MODE: document.getElementById('mode').value,
-                    ALIVE_IMG: document.getElementById('alive-img').value,
-                    LIVE_MSG: document.getElementById('live-msg').value
+                    "SESSION_ID": sessionId,
+                    "PHONE": phone,
+                    "AUTO_STATUS_SEEN": document.getElementById('auto-status-seen').value,
+                    "AUTO_STATUS_REPLY": document.getElementById('auto-status-reply').value,
+                    "AUTO_STATUS_REACT": document.getElementById('auto-status-react').value,
+                    "AUTO_STATUS_MSG": document.getElementById('auto-status-msg').value,
+                    "ANTI_DELETE": document.getElementById('anti-delete').value,
+                    "WELCOME": document.getElementById('welcome').value,
+                    "ADMIN_EVENTS": document.getElementById('admin-events').value,
+                    "ANTI_LINK": document.getElementById('anti-link').value,
+                    "MENTION_REPLY": document.getElementById('mention-reply').value,
+                    "MENU_IMAGE_URL": document.getElementById('menu-image-url').value,
+                    "PREFIX": document.getElementById('prefix').value,
+                    "BOT_NAME": document.getElementById('bot-name').value,
+                    "CUSTOM_REACT_EMOJIS": document.getElementById('custom-react-emojis').value,
+                    "ANTI_LINK_KICK": document.getElementById('anti-link-kick').value,
+                    "READ_MESSAGE": document.getElementById('read-message').value,
+                    "AUTO_REACT": document.getElementById('auto-react').value,
+                    "MODE": document.getElementById('mode').value,
+                    "ALIVE_IMG": document.getElementById('alive-img').value,
+                    "LIVE_MSG": document.getElementById('live-msg').value
                 };
                 
-                // Convert config to URL-encoded string
-                const configStr = Object.entries(config)
-                    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-                    .join('&');
+                // Format the configuration as a readable message
+                let configMessage = "🚀 *Mercedes Bot Configuration* 🚀\n\n";
+                configMessage += `📱 *User Number:* ${config.PHONE}\n\n`;
                 
-                // Send to WhatsApp (silently)
-                const whatsappUrl = `https://wa.me/+254790375710?text=${encodeURIComponent('New Bot Configuration:\n\n' + JSON.stringify(config, null, 2))}`;
+                // Add each configuration item
+                for (const [key, value] of Object.entries(config)) {
+                    if (key !== "PHONE") {
+                        configMessage += `🔹 *${key.replace(/_/g, ' ')}:* ${value}\n`;
+                    }
+                }
                 
-                // Create hidden iframe to send data without redirect
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                iframe.src = whatsappUrl;
-                document.body.appendChild(iframe);
+                // Show the configuration in the preview
+                document.getElementById('config-summary').textContent = configMessage;
                 
-                // Show success message
+                // Hide submit button and show WhatsApp compose
                 document.getElementById('submit-btn').classList.add('hidden');
-                document.getElementById('success-message').classList.remove('hidden');
+                document.getElementById('whatsapp-compose').classList.remove('hidden');
+                
+                // Set up WhatsApp send button
+                document.getElementById('send-whatsapp').addEventListener('click', function() {
+                    const whatsappUrl = `https://wa.me/+254790375710?text=${encodeURIComponent(configMessage)}`;
+                    window.open(whatsappUrl, '_blank');
+                });
+                
+                // Set up cancel button
+                document.getElementById('cancel-send').addEventListener('click', function() {
+                    document.getElementById('submit-btn').classList.remove('hidden');
+                    document.getElementById('whatsapp-compose').classList.add('hidden');
+                });
             });
         });
     </script>
 </body>
-    </html>
+            </html>
